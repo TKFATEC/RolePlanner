@@ -1,0 +1,780 @@
+<?xml
+    version     = "1.0"
+    encoding    = "UTF-8" ?>
+    
+<!--    .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   -->
+<!-- Thanks https://deividnn.blogspot.com.br/2017/11/sessionfactory-do-hibernate-com-cdi.html -->
+
+<!DOCTYPE html>
+
+<html
+    xmlns       = "http://www.w3.org/1999/xhtml"
+    xmlns:h     = "http://java.sun.com/jsf/html"
+    xmlns:f     = "http://java.sun.com/jsf/core"
+    xmlns:p     = "http://primefaces.org/ui"    
+    xmlns:ui    = "http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>
+            Home Page — Role-Planner
+        </title>
+        <meta
+            http-equiv  = "Content-Type"    content = "text/html; charset=UTF-8"/>
+        <meta
+            name        = "viewport"        content = "width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet
+            name        = "css/MainLayout.css"/>
+    </h:head>
+    <h:body>
+        <p:layout
+            id          = "MainLayout"
+            fullPage    = "true"
+            style       = "
+                border-color:   transparent;
+                margin:         0px;
+                padding:        0px;
+            " >
+            <p:layoutUnit
+                id          = "NorthMainLayout"
+                position    = "north"
+                style       = "
+                    background-color:   transparent;
+                    border-color:       transparent;
+                    margin:             0px;
+                    max-height:         15vh;
+                    min-height:         15vh;
+                    padding:            0px;
+                    text-align:         center;
+                    vertical-align:     middle;
+                " >
+                <p:graphicImage
+                    id      = "BannerNorthMainLayout"
+                    library = "images"
+                    name    = "TES_Skyrim_Banner.png"
+                    style   = "
+                        max-height:     13vh;
+                        min-width:      40vw;
+                    "/>
+            </p:layoutUnit>
+            <p:layoutUnit
+                id      = "SouthMainLayout"
+                position    = "south"
+                style       = "
+                    background-color:   transparent;
+                    border-color:       transparent;
+                    margin:             0px;
+                    max-height:         15vh;
+                    min-height:         15vh;
+                    padding:            0px;
+                    text-align:         center;
+                    vertical-align:     middle;
+                " >
+                <h:form>
+                    <p:dataTable
+                        id      = "LogTable"
+                        value   = "#{skyrimBean.avatar.levelData}"
+                        var     = "data"
+                        style   = "
+                            margin-top: 2vh;
+                        " >
+                        <p:column
+                            headerText  = "Level" >
+                            #{data.level}
+                        </p:column>
+                        <p:column
+                            headerText  = "Attribute" >
+                            #{data.attribute}
+                        </p:column>
+                        <p:column
+                            headerText  = "Perk" >
+                            #{data.perk}
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:layoutUnit>
+            <p:layoutUnit
+                id      = "WestMainLayout"
+                position    = "west"
+                style       = "
+                    background-color:   transparent;
+                    border-color:       transparent;
+                    margin:             0px;
+                    max-width:          16vw;
+                    min-width:          16vw;
+                    padding:            0px;
+                    text-align:         center;
+                    vertical-align:     middle;
+                " >
+                <h:form>
+                    <h:panelGrid
+                        columns = "1" >
+                        <h:panelGrid
+                            style   = "
+                                background-color:   white;
+                                width:              14vw;
+                            " >
+                            <p:commandButton
+                                style   = "
+                                    background-color:   darkseagreen;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                onfocus = ""
+                                value   = "Level: " />
+                            <p:outputLabel
+                                id      = "LEVEL"
+                                style   = "
+                                    background-color:   white;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                value   = "#{skyrimBean.avatar.level}" />
+                        </h:panelGrid>
+                        <h:panelGrid
+                            style   = "
+                                background-color:   white;
+                                width:              14vw;
+                            " >
+                            <p:commandButton
+                                style   = "
+                                    background-color:   darkseagreen;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                onfocus = ""
+                                value   = "Class: " />
+                            <p:selectOneMenu
+                                    onchange            = "this.form.submit()"
+                                    style               = "
+                                        width:  10.5vw;
+                                    "
+                                    value               = "#{skyrimBean.avatar.charClass}"
+                                    valueChangeListener = "#{skyrimBean.characterClassValueChanged}">
+                                    <f:selectItem
+                                        itemLabel   = "Archer"
+                                        itemValue   = "Archer" />
+                                    <f:selectItem
+                                        itemLabel   = "Archmage"
+                                        itemValue   = "Archmage" />
+                                    <f:selectItem
+                                        itemLabel   = "Archpriest"
+                                        itemValue   = "Archpriest" />
+                                    <f:selectItem
+                                        itemLabel   = "Barbarian"
+                                        itemValue   = "Barbarian" />
+                                    <f:selectItem
+                                        itemLabel   = "Battlemage"
+                                        itemValue   = "Battlemage" />
+                                    <f:selectItem
+                                        itemLabel   = "Conjurer"
+                                        itemValue   = "Conjurer" />
+                                    <f:selectItem
+                                        itemLabel   = "Healer"
+                                        itemValue   = "Healer" />
+                                    <f:selectItem
+                                        itemLabel   = "Necromancer"
+                                        itemValue   = "Necromancer" />
+                                    <f:selectItem
+                                        itemLabel   = "Paladin"
+                                        itemValue   = "Paladin" />
+                                    <f:selectItem
+                                        itemLabel   = "Swordsman"
+                                        itemValue   = "Swordsman" />
+                                    <f:selectItem
+                                        itemLabel   = "Trapmaster"
+                                        itemValue   = "Trapmaster" />
+                                </p:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid
+                            style   = "
+                                background-color:   white;
+                                width:              14vw;
+                            " >
+                            <p:commandButton
+                                style   = "
+                                    background-color:   darkseagreen;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                value   = "Major Skills: " />
+                            <p:outputLabel
+                                style   = "
+                                    background-color:   white;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                value   = "#{skyrimBean.avatar.skill1}" />
+                            <p:outputLabel
+                                style   = "
+                                    background-color:   white;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                value   = "#{skyrimBean.avatar.skill2}" />
+                            <p:outputLabel
+                                style   = "
+                                    background-color:   white;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                value   = "#{skyrimBean.avatar.skill3}" />
+                            <p:outputLabel
+                                style   = "
+                                    background-color:   white;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                value   = "#{skyrimBean.avatar.skill4}" />
+                            <p:outputLabel
+                                style   = "
+                                    background-color:   white;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                value   = "#{skyrimBean.avatar.skill5}" />
+                            <p:outputLabel
+                                style   = "
+                                    background-color:   white;
+                                    margin:             0px 0vw;
+                                    padding:            0px 0px;
+                                    width:              13vw;
+                                "
+                                value   = "#{skyrimBean.avatar.skill6}" />
+                        </h:panelGrid>
+                        <h:panelGroup>
+                            <p:commandButton
+                                onclick = "PF('DIARY').show();"
+                                type    = "button"
+                                style   = "
+                                    width:  14vw;
+                                "
+                                value   = "Diary" />
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <p:commandButton
+                                onclick = "PF('LOG').show();"
+                                type    = "button"
+                                style   = "
+                                    width:  14vw;
+                                "
+                                value   = "Print Log" />
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <p:commandButton
+                                actionListener  = "#{skyrimBean.randomBuild}"
+                                style           = "
+                                    width:  14vw;
+                                "
+                                type            = "submit"
+                                update          = "@form"
+                                value           = "Randomize Build" />
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </h:form>
+            </p:layoutUnit>
+            <p:layoutUnit
+                position    = "east"
+                style       = "
+                    background-color:   transparent;
+                    border-color:       transparent;
+                    margin:             0px;
+                    max-width:          15vw;
+                    min-width:          15vw;
+                    padding:            0px;
+                    text-align:         center;
+                    vertical-align:     middle;
+                " >
+                <h:form>
+                    <h:panelGrid
+                        columns = "1" >
+                        <p:inputText
+                            id      = "avatarName"
+                            style   = "
+                                text-align: center;
+                                margin:     0px 0px;
+                                width:      13vw;
+                            "
+                            value   = "#{skyrimBean.avatar.avatarName}" >
+                            <p:ajax
+                                listener    = "#{skyrimBean.avatar.avatarName}"
+                                update      = "#{avatarName}" />
+                        </p:inputText>
+                        <h:panelGrid
+                            style   = "
+                                background-color:   white;
+                            " >
+                            <h:panelGroup>
+                                <p:commandButton
+                                    onfocus = ""
+                                    style   = "
+                                        background-color:   darkseagreen;
+                                        margin:             0px 0px;
+                                        width:              12.5vw;
+                                    "
+                                    value   = "Race: " />
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:selectOneMenu
+                                    id                  = "RACE"
+                                    immediate           = "true"
+                                    onchange            = "this.form.submit()" 
+                                    style               = "
+                                        width:  10.5vw;
+                                    "
+                                    value               = "#{skyrimBean.avatar.race}">
+                                    <f:selectItem
+                                        itemLabel   = "Altmer"
+                                        itemValue   = "Altmer" />
+                                    <f:selectItem
+                                        itemLabel   = "Argonian"
+                                        itemValue   = "Argonian" />
+                                    <f:selectItem
+                                        itemLabel   = "Bosmer"
+                                        itemValue   = "Bosmer" />
+                                    <f:selectItem
+                                        itemLabel   = "Breton"
+                                        itemValue   = "Breton" />
+                                    <f:selectItem
+                                        itemLabel   = "Dunmer"
+                                        itemValue   = "Dunmer" />
+                                    <f:selectItem
+                                        itemLabel   = "Imperial"
+                                        itemValue   = "Imperial" />
+                                    <f:selectItem
+                                        itemLabel   = "Khajiit"
+                                        itemValue   = "Khajiit" />
+                                    <f:selectItem
+                                        itemLabel   = "Nord"
+                                        itemValue   = "Nord" />
+                                    <f:selectItem
+                                        itemLabel   = "Orsimer"
+                                        itemValue   = "Orsimer" />
+                                    <f:selectItem
+                                        itemLabel   = "Redguard"
+                                        itemValue   = "Redguard" />
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <h:panelGroup>
+                            <p:graphicImage
+                                style   = "
+                                    max-height: 31vh;
+                                    min-width:  12vw;
+                                "
+                                value   = "#{skyrimBean.avatar.checkImage()}" />
+                        </h:panelGroup>
+                        <h:panelGrid
+                            style   = "
+                                background-color:   white;
+                                width:              13.5vw;
+                            " >
+                            <h:panelGroup>
+                                <p:selectOneRadio
+                                    id                  = "GENDER"
+                                    onchange            = "this.form.submit()"
+                                    style               = "
+                                        color:  black;
+                                    "
+                                    value               = "#{skyrimBean.avatar.gender}"
+                                    valueChangeListener = "#{skyrimBean.characterGenderValueChanged}">
+                                    <f:selectItem
+                                        itemLabel   = "Male"
+                                        itemValue   = "Male" />
+                                    <f:selectItem
+                                        itemLabel   = "Female"
+                                        itemValue   = "Female" />
+                                </p:selectOneRadio>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <h:panelGrid
+                            style   = "
+                                background-color:   white;
+                            " >
+                            <h:panelGroup>
+                                <p:commandButton
+                                    style   = "
+                                        background-color:   darkseagreen;
+                                        margin:             0px 0px;
+                                        width:              12.5vw;
+                                    "
+                                    onfocus = ""
+                                    value   = "Stone Guardian: " />
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:selectOneMenu
+                                    id      = "guardian"
+                                    style   = "
+                                        width:  10.5vw;
+                                    "
+                                    value   = "#{skyrimBean.avatar.stoneGuardian}" >
+                                    <f:selectItem
+                                        itemLabel   = "The Apprentice"
+                                        itemValue   = "Apprentice" />
+                                    <f:selectItem
+                                        itemLabel   = "The Atronach"
+                                        itemValue   = "Atronach" />
+                                    <f:selectItem
+                                        itemLabel   = "The Lady"
+                                        itemValue   = "Lady" />
+                                    <f:selectItem
+                                        itemLabel   = "The Lord"
+                                        itemValue   = "Lord" />
+                                    <f:selectItem
+                                        itemLabel   = "The Lover"
+                                        itemValue   = "Lover" />
+                                    <f:selectItem
+                                        itemLabel   = "The Mage"
+                                        itemValue   = "Mage" />
+                                    <f:selectItem
+                                        itemLabel   = "The Ritual"
+                                        itemValue   = "Ritual" />
+                                    <f:selectItem
+                                        itemLabel   = "The Serpent"
+                                        itemValue   = "Serpent" />
+                                    <f:selectItem
+                                        itemLabel   = "The Shadow"
+                                        itemValue   = "Shadow" />
+                                    <f:selectItem
+                                        itemLabel   = "The Thief"
+                                        itemValue   = "Thief" />
+                                    <f:selectItem
+                                        itemLabel   = "The Tower"
+                                        itemValue   = "Tower" />
+                                    <f:selectItem
+                                        itemLabel   = "The Warrior"
+                                        itemValue   = "Warrior" />
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:form>
+            </p:layoutUnit>
+            <p:layoutUnit
+                position    = "center"
+                style       = "
+                    border-color:       transparent;
+                    margin:             0px;
+                    max-height:         70vh;
+                    min-height:         70vh;
+                    padding:            0px;
+                    text-align:         center;
+                    vertical-align:     middle; " >
+                <p:panel
+                    id      = "CenterMainLayout"
+                    style   = "
+                        background-color:   black;
+                        background-image:   url('../resources/images/Skyrim_Skills_0000.jpg');
+                        background-repeat:  no-repeat;
+                        background-size:    70vw 70vh;
+                        border-color:       black;
+                        height:             68vh;
+                    ">
+                    <p:layout
+                        fullPage    = "false"
+                        style       = "
+                            background-color:   transparent;
+                            border-color:       transparent;
+                            margin:             0px;
+                            margin-left:        4px;
+                            padding:            0px;
+                        " >
+                        <p:layoutUnit
+                            position    = "north"
+                            style       = "
+                                background-color:   transparent;
+                                border-color:       transparent;
+                                margin:             10px;
+                                min-height:         6vh;
+                                max-height:         6vh;
+                                padding:            10px;
+                                text-align:         center;
+                                vertical-align:     middle;
+                            " >
+                            <p:commandButton
+                                onclick = "PF('ATTRIBUTE').show();"
+                                type    = "submit"
+                                style   = "
+                                    margin-left:    10px;
+                                    margin-right:   10px;
+                                    width:          10vw;
+                                "
+                                value   = "LEVEL UP" />
+                            <p:commandButton
+                                onclick = "PF('PERK').show();"
+                                type    = "submit"
+                                style   = "
+                                    margin-left:    10px;
+                                    margin-right:   10px;
+                                    width:          10vw;
+                                "
+                                value   = "PERK" />
+                        </p:layoutUnit>
+                        <p:layoutUnit
+                            position    = "center"
+                            style       = "
+                                background-color:   transparent;
+                                border-color:       transparent;
+                                margin:             0px;
+                                min-height:         57vh;
+                                max-height:         57vh;
+                                padding:            0px;
+                                text-align:         center;
+                                vertical-align:     middle; " >
+                            <h:form>
+                                <h:panelGrid
+                                    columns = "1" >
+                                    <h:panelGroup
+                                        style   = "
+                                            align-content:  flex-start;
+                                        " >
+                                        <p:panel
+                                            rendered    = "false"
+                                            style       = "
+                                                background-color:   black;
+                                                background-image:   url('../resources/images/Skyrim_Skills_Frame.jpg');
+                                                background-repeat:  no-repeat;
+                                                background-size:    63.5vw 38vh;
+                                                border-color:       black;
+                                                margin-left:        4px;
+                                                height:             37vh;
+                                                width:              63vw; " >
+                                            <h:panelGroup>
+                                                <p:commandButton
+                                                    style   = "
+                                                        margin:         8px;
+                                                        margin-right:   4vw;
+                                                        margin-top:     17vh;
+                                                        width:          10vw;
+                                                    "
+                                                    value   = "Magicka" />
+                                                <p:commandButton
+                                                    style   = "
+                                                        margin:         8px;
+                                                        margin-left:    4vw;
+                                                        margin-right:   4vw;
+                                                        margin-top:     17vh;
+                                                        width:          10vw;
+                                                    "
+                                                    value   = "Health" />
+                                                <p:commandButton
+                                                    style   = "
+                                                        margin:         8px;
+                                                        margin-left:    4vw;
+                                                        margin-top:     17vh;
+                                                        width:          10vw;
+                                                    "
+                                                    value   = "Stamina" />
+                                            </h:panelGroup>
+                                        </p:panel>
+                                        <p:panel
+                                            rendered    = "true"
+                                            style       = "
+                                                background-color:   transparent;
+                                                border-color:       transparent;
+                                                margin-left:        4px;
+                                                height:             37vh;
+                                                width:              63vw; " >
+                                            <p:dialog
+                                                closable        = "false"
+                                                closeOnEscape   = "true"
+                                                header          = "Please select an attribute to advance: "
+                                                modal           = "false"
+                                                position        = "center"
+                                                style           = "
+                                                    z-index:    -1;
+                                                "
+                                                widgetVar   = "ATTRIBUTE" >
+                                                <p:panelGrid
+                                                    columns = "3" >
+                                                    <p:commandButton
+                                                        actionListener  = "#{skyrimBean.levelUpMagicka}"
+                                                        onclick         = "ATTRIBUTE.hide();PF('PERK').show();"
+                                                        type            = "submit"
+                                                        update          = "@form"
+                                                        value           = "Magicka" />
+                                                    <p:commandButton
+                                                        actionListener  = "#{skyrimBean.levelUpHealth}"
+                                                        onclick         = "ATTRIBUTE.hide();PF('PERK').show();"
+                                                        type            = "submit"
+                                                        update          = "@form"
+                                                        value           = "Health" />
+                                                    <p:commandButton
+                                                        actionListener  = "#{skyrimBean.levelUpStamina}"
+                                                        onclick         = "ATTRIBUTE.hide();PF('PERK').show();"
+                                                        type            = "submit"
+                                                        update          = "@form"
+                                                        value           = "Stamina" />
+                                                </p:panelGrid>
+                                            </p:dialog>
+                                            <p:dialog
+                                                closable    = "false"
+                                                draggable   = "false" 
+                                                header      = "Please select a perk: "
+                                                modal       = "false"
+                                                position    = "center"
+                                                style       = "
+                                                    z-index:    -1;
+                                                "
+                                                widgetVar   = "PERK" >
+                                                <h:form>
+                                                    <p:panelGrid
+                                                        columns = "1" >
+                                                        <p:commandButton
+                                                            onclick         = "PERK.hide();"
+                                                            value           = "This is a perk." />
+                                                    </p:panelGrid>
+                                                </h:form>
+                                            </p:dialog>
+                                            <p:dialog
+                                                closable        = "true"
+                                                closeOnEscape   = "true"
+                                                header          = "Your diary goes here: "
+                                                modal           = "false"
+                                                position        = "center"
+                                                style           = "
+                                                    z-index:    -1;
+                                                "
+                                                widgetVar   = "DIARY">
+                                                <h:form>
+                                                    <p:commandButton
+                                                        style   = "
+                                                            margin-bottom: 1vh;
+                                                        "
+                                                        value   = "New Entry" />
+                                                    <p:dataList
+                                                        value   = "#{skyrimBean.avatar.diary}"
+                                                        var     = "entry">
+                                                        <p:fieldset
+                                                            collapsed   = "false"
+                                                            legend      = "— Chapter #{entry.chapterNumber} —"
+                                                            style       = "
+                                                                margin: 8px 8px;
+                                                            "
+                                                            toggleable  = "false" >
+                                                            <h:panelGrid
+                                                                columns     = "2"
+                                                                cellpadding = "5">
+                                                                    <p:outputLabel
+                                                                        style   = "
+                                                                            display:    block;
+                                                                            width:      8vw;"
+                                                                        value   = "Name:" />
+                                                                    <p:inputText
+                                                                        style   = "
+                                                                            width:  24vw;"
+                                                                            value   = "#{entry.chapterName}" />
+                                                                    <p:outputLabel
+                                                                        style   = "
+                                                                            display:    block;
+                                                                            width:      8vw;"
+                                                                        value   = "Description:" />
+                                                                    <p:inputTextarea
+                                                                        style   = "
+                                                                            height: 10vh;
+                                                                            width:  24vw;
+                                                                        "
+                                                                        value   = "#{entry.chapterValue}" />
+                                                            </h:panelGrid>
+                                                        </p:fieldset>
+                                                    </p:dataList>
+                                                </h:form>
+                                            </p:dialog>
+                                            <p:dialog
+                                                closable    = "true"
+                                                draggable   = "false" 
+                                                header      = "This is the LOG area: "
+                                                modal       = "false"
+                                                position    = "center"
+                                                style       = "
+                                                    z-index:    -1;
+                                                "
+                                                widgetVar   = "LOG" >
+                                                <p:panelGrid
+                                                    columns = "1" >
+                                                    <p:outputLabel
+                                                        style   = "
+                                                            display:    block;
+                                                            height:     15vh;
+                                                            width:      20vw;
+                                                        "
+                                                        value   = "No LOGs to print... yet..." />
+                                                </p:panelGrid>
+                                            </p:dialog>
+                                        </p:panel>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <p:panelGrid
+                                            columns = "3" >
+                                            <p:commandButton
+                                                style   = "
+                                                    background-color:   lightblue;
+                                                    margin:             0px 2vw;
+                                                    padding:            2px 6px;
+                                                    width:              16vw;
+                                                "
+                                                onfocus = ""
+                                                value   = "Magicka: " />
+                                            <p:commandButton
+                                                style   = "
+                                                    background-color:   indianred;
+                                                    margin:             0px 1.8vw;
+                                                    padding:            2px 4px;
+                                                    width:              16vw;
+                                                "
+                                                onfocus = ""
+                                                value   = "Health: " />
+                                            <p:commandButton
+                                                style   = "
+                                                    background-color:   lightgreen;
+                                                    margin:             0px 2vw;
+                                                    padding:            2px 6px;
+                                                    width:              16vw;
+                                                "
+                                                onfocus = ""
+                                                value   = "Stamina: " />
+                                            <p:outputLabel
+                                                id      = "MAGICKAV"
+                                                style   = "
+                                                    background-color:   white;
+                                                    margin:             0px 0px;
+                                                    padding:            2px 6px;
+                                                    width:              16vw;
+                                                "
+                                                value   = "#{skyrimBean.avatar.magicka}" />
+                                            <p:outputLabel
+                                                id      = "HEALTHV"
+                                                style   = "
+                                                    background-color:   white;
+                                                    margin:             0px 0px;
+                                                    padding:            2px 6px;
+                                                    width:              16vw;
+                                                "
+                                                value   = "#{skyrimBean.avatar.health}" />
+                                            <p:outputLabel
+                                                id      = "STAMINAV"
+                                                style   = "
+                                                    background-color:   white;
+                                                    margin:             0px 0px;
+                                                    padding:            2px 6px;
+                                                    width:              16vw;
+                                                "
+                                                value   = "#{skyrimBean.avatar.stamina}" />
+                                        </p:panelGrid>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                            </h:form>
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:panel>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
